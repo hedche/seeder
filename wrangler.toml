@@ -1,0 +1,8 @@
+name = "seeder"
+compatibility_date = "2025-01-15"
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+[[kv_namespaces]]
+binding = "SEED_KV"
+id = "REPLACE_WITH_PROD_KV_ID"
+preview_id = "REPLACE_WITH_PREVIEW_KV_ID"
