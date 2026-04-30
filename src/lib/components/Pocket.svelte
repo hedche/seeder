@@ -62,8 +62,8 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 2px;
-		padding: 4%;
+		gap: 1px;
+		padding: 3px;
 		cursor: default;
 		font-family: inherit;
 		color: inherit;
@@ -86,10 +86,11 @@
 		line-height: 1;
 	}
 	.pocket.compact .emoji {
-		font-size: clamp(0.7rem, 7cqw, 1.4rem);
+		font-size: 1.4rem;
+		line-height: 1;
 	}
 	.name {
-		font-size: clamp(0.45rem, 2.4cqw, 0.7rem);
+		font-size: 0.72rem;
 		line-height: 1.05;
 		text-align: center;
 		max-width: 100%;

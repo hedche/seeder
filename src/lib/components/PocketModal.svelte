@@ -5,12 +5,14 @@
 
 	let {
 		open,
+		trayId,
 		row,
 		col,
 		pocket,
 		onclose
 	}: {
 		open: boolean;
+		trayId: number;
 		row: number;
 		col: number;
 		pocket: Pocket | null;
@@ -142,7 +144,17 @@
 
 			<footer>
 				{#if pocket?.vegetable}
-					<form method="POST" action="?/clearPocket" use:enhance>
+					<form
+						method="POST"
+						action="?/clearPocket"
+						use:enhance={() => {
+							return async ({ update }) => {
+								await update();
+								onclose();
+							};
+						}}
+					>
+						<input type="hidden" name="trayId" value={trayId} />
 						<input type="hidden" name="row" value={row} />
 						<input type="hidden" name="col" value={col} />
 						<button type="submit" class="clear">Clear pocket</button>
@@ -162,6 +174,7 @@
 				}}
 				style="display:none"
 			>
+				<input type="hidden" name="trayId" value={trayId} />
 				<input type="hidden" name="row" value={row} />
 				<input type="hidden" name="col" value={col} />
 				<input type="hidden" name="name" value={pickedName} />

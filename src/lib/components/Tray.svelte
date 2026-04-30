@@ -17,14 +17,15 @@
 	const dims = $derived(TRAY_DIMENSIONS[tray.size]);
 </script>
 
-<div class="tray-wrap" class:compact>
+<div
+	class="tray-wrap"
+	class:compact
+	style="--cols: {dims.cols}; --rows: {dims.rows};"
+>
 	<div class="notch-row">
 		<TriangleNotch count={tray.id} />
 	</div>
-	<div
-		class="tray"
-		style="--cols: {dims.cols}; --rows: {dims.rows}; aspect-ratio: {dims.cols} / {dims.rows};"
-	>
+	<div class="tray">
 		{#each tray.pockets as row, r}
 			{#each row as pocket, c}
 				<div class="cell">
@@ -47,9 +48,24 @@
 		align-items: stretch;
 		width: 100%;
 	}
+	/* Compact mode: fixed height, width derived from aspect ratio. Lets
+	   different tray sizes line up at the same baseline in the overview. */
+	.tray-wrap.compact {
+		--target-h: 360px;
+		--notch-h: 16px;
+		height: var(--target-h);
+		width: calc((var(--target-h) - var(--notch-h)) * var(--cols) / var(--rows));
+		max-width: 100%;
+		margin: 0 auto;
+		container-type: normal;
+	}
 	.notch-row {
 		width: 100%;
 		padding: 0 4%;
+	}
+	.tray-wrap.compact .notch-row {
+		height: var(--notch-h);
+		flex: 0 0 auto;
 	}
 	.tray {
 		width: 100%;
@@ -62,6 +78,15 @@
 		border-top: none;
 		border-radius: 0 0 14px 14px;
 		background: var(--tray-bg);
+		aspect-ratio: var(--cols) / var(--rows);
+	}
+	.tray-wrap.compact .tray {
+		flex: 1 1 auto;
+		height: auto;
+		aspect-ratio: auto;
+		gap: 3px;
+		padding: 6px;
+		border-radius: 0 0 10px 10px;
 	}
 	.cell {
 		display: grid;
