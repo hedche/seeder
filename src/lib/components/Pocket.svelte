@@ -15,13 +15,19 @@
 
 	function sowColor(sownAt: string): string {
 		const days = (Date.now() - new Date(sownAt).getTime()) / 86_400_000;
-		const t = Math.min(Math.max(days, 0) / 14, 1);
-		// hue:  0 (red) → 25 (orange) at t=0.5 → 120 (green) at t=1
-		const hue = t < 0.5 ? t * 2 * 25 : 25 + (t - 0.5) * 2 * 95;
-		// saturation: 45% → 80% → 50%
-		const sat = t < 0.5 ? 45 + t * 2 * 35 : 80 - (t - 0.5) * 2 * 30;
-		// lightness: 92% → 62% → 50%
-		const lit = t < 0.5 ? 92 - t * 2 * 30 : 62 - (t - 0.5) * 2 * 12;
+		const t = Math.min(Math.max(days, 0) / 21, 1);
+		// 3 segments: white (day 0) → light red (day 7) → orange (day 14) → green (day 21)
+		let hue: number, sat: number, lit: number;
+		if (t < 1 / 3) {
+			const s = t * 3;
+			hue = 0; sat = s * 45; lit = 100 - s * 8;
+		} else if (t < 2 / 3) {
+			const s = (t - 1 / 3) * 3;
+			hue = s * 25; sat = 45 + s * 35; lit = 92 - s * 30;
+		} else {
+			const s = (t - 2 / 3) * 3;
+			hue = 25 + s * 95; sat = 80 - s * 30; lit = 62 - s * 12;
+		}
 		return `hsl(${hue.toFixed(0)},${sat.toFixed(0)}%,${lit.toFixed(0)}%)`;
 	}
 
