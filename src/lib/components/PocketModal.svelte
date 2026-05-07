@@ -81,12 +81,33 @@
 		if (!trimmed) return;
 		submitVegetable({ name: trimmed, emoji: '🌱' });
 	}
+
+	// Keep the backdrop locked to the visual viewport so the sheet stays above the on-screen keyboard.
+	let backdropStyle = $state('');
+
+	$effect(() => {
+		const vv = typeof window !== 'undefined' ? window.visualViewport : null;
+		if (!vv) return;
+
+		function update() {
+			backdropStyle = `top: ${vv.offsetTop}px; height: ${vv.height}px;`;
+		}
+
+		update();
+		vv.addEventListener('resize', update);
+		vv.addEventListener('scroll', update);
+
+		return () => {
+			vv.removeEventListener('resize', update);
+			vv.removeEventListener('scroll', update);
+		};
+	});
 </script>
 
 <svelte:window onkeydown={onKey} />
 
 {#if open}
-	<div class="backdrop" role="presentation" onclick={onclose}>
+	<div class="backdrop" role="presentation" onclick={onclose} style={backdropStyle}>
 		<div
 			class="sheet"
 			role="dialog"
@@ -301,17 +322,18 @@
 		min-height: 44px;
 	}
 
-	/* Phone: bottom sheet that still leaves clickable backdrop above */
+	/* Phone: top sheet so the keyboard (which opens from the bottom) never covers it */
 	@media (max-width: 600px) {
 		.backdrop {
-			align-items: end;
+			align-items: start;
 			padding: 0;
 		}
 		.sheet {
 			width: 100%;
-			border-radius: 18px 18px 0 0;
-			padding-bottom: max(1rem, env(safe-area-inset-bottom));
-			max-height: 80dvh;
+			border-radius: 0 0 18px 18px;
+			padding-top: max(1rem, env(safe-area-inset-top));
+			padding-bottom: 1rem;
+			max-height: 80%;
 		}
 	}
 </style>

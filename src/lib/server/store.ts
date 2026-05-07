@@ -54,6 +54,23 @@ export async function setPocket(
 	await writeState(kv, state);
 }
 
+export async function renameTray(
+	kv: KVNamespace,
+	trayId: number,
+	newId: number
+): Promise<{ ok: boolean; error?: string }> {
+	if (trayId === newId) return { ok: true };
+	const state = await readState(kv);
+	const tray = state.trays.find((t) => t.id === trayId);
+	if (!tray) return { ok: false, error: 'Tray not found' };
+	if (state.trays.some((t) => t.id === newId)) {
+		return { ok: false, error: `Tray #${newId} already exists` };
+	}
+	tray.id = newId;
+	await writeState(kv, state);
+	return { ok: true };
+}
+
 export async function getTray(kv: KVNamespace, id: number): Promise<Tray | undefined> {
 	const state = await readState(kv);
 	return state.trays.find((t) => t.id === id);

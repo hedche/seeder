@@ -9,6 +9,24 @@
 
 	let adding = $state(false);
 
+	let editingTrayId = $state<number | null>(null);
+	let editValue = $state(0);
+	let renameError = $state<string | null>(null);
+
+	function startEdit(tray: TrayType) {
+		editingTrayId = tray.id;
+		editValue = tray.id;
+		renameError = null;
+	}
+	function cancelEdit() {
+		editingTrayId = null;
+		renameError = null;
+	}
+	function autoFocus(node: HTMLElement) {
+		(node as HTMLInputElement).focus();
+		(node as HTMLInputElement).select?.();
+	}
+
 	let activeTrayId = $state<number | null>(null);
 	let activeRow = $state(-1);
 	let activeCol = $state(-1);
@@ -78,9 +96,57 @@
 		{#each data.state.trays as tray (tray.id)}
 			<li class="card">
 				<div class="card-head">
-					<span class="id">#{tray.id}</span>
+					{#if editingTrayId === tray.id}
+						<form
+							class="id-form"
+							method="POST"
+							action="?/renameTray"
+							use:enhance={() => {
+								return async ({ result, update }) => {
+									if (result.type === 'failure') {
+										renameError =
+											(result.data as { error?: string })?.error ?? 'Error';
+									} else {
+										editingTrayId = null;
+										renameError = null;
+										await update();
+									}
+								};
+							}}
+						>
+							<input type="hidden" name="trayId" value={tray.id} />
+							<span class="id-hash">#</span>
+							<input
+								class="id-input"
+								type="number"
+								name="newId"
+								bind:value={editValue}
+								min="1"
+								step="1"
+								use:autoFocus
+								onkeydown={(e) => {
+									if (e.key === 'Escape') cancelEdit();
+								}}
+							/>
+							<button type="submit" class="id-btn" aria-label="Confirm rename">✓</button>
+							<button
+								type="button"
+								class="id-btn"
+								aria-label="Cancel rename"
+								onclick={cancelEdit}>✕</button
+							>
+						</form>
+					{:else}
+						<button class="id" onclick={() => startEdit(tray)} title="Rename tray"
+							>#{tray.id}</button
+						>
+					{/if}
+					{#if renameError && editingTrayId === tray.id}
+						<span class="rename-error">{renameError}</span>
+					{/if}
 					<span class="size">{tray.size}</span>
 					<form
+						class="delete-form"
 						method="POST"
 						action="?/deleteTray"
 						use:enhance
@@ -125,15 +191,15 @@
 		margin: 0;
 	}
 	.primary {
-		font-size: 0.95rem;
-		padding: 0.7rem 1rem;
-		border-radius: 0.6rem;
+		font-size: 0.8rem;
+		padding: 0.4rem 0.7rem;
+		border-radius: 0.5rem;
 		border: none;
 		background: var(--accent);
 		color: white;
 		font-weight: 600;
 		cursor: pointer;
-		min-height: 44px;
+		min-height: 32px;
 	}
 	.picker {
 		display: flex;
@@ -186,12 +252,69 @@
 		gap: 0.4rem;
 		margin-bottom: 0.5rem;
 	}
-	.card-head form {
+	.delete-form {
 		margin-left: auto;
 	}
 	.id {
 		font-weight: 600;
 		font-size: 0.9rem;
+		background: none;
+		border: none;
+		color: inherit;
+		padding: 0;
+		cursor: pointer;
+		border-radius: 0.25rem;
+	}
+	.id:hover,
+	.id:focus-visible {
+		text-decoration: underline;
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.id-form {
+		display: flex;
+		align-items: center;
+		gap: 0.2rem;
+	}
+	.id-hash {
+		font-weight: 600;
+		font-size: 0.9rem;
+	}
+	.id-input {
+		width: 3.5rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		font-family: inherit;
+		padding: 0.1rem 0.3rem;
+		border: 1px solid var(--accent);
+		border-radius: 0.3rem;
+		background: var(--bg);
+		color: inherit;
+	}
+	.id-input:focus {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+	}
+	.id-btn {
+		background: none;
+		border: none;
+		color: inherit;
+		font-size: 0.8rem;
+		cursor: pointer;
+		padding: 0.2rem 0.3rem;
+		border-radius: 0.3rem;
+		opacity: 0.6;
+		line-height: 1;
+	}
+	.id-btn:hover,
+	.id-btn:focus-visible {
+		opacity: 1;
+		background: var(--hover);
+	}
+	.rename-error {
+		font-size: 0.7rem;
+		color: #e53e3e;
+		white-space: nowrap;
 	}
 	.size {
 		font-size: 0.65rem;

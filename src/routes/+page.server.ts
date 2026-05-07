@@ -1,6 +1,6 @@
 import type { Actions, PageServerLoad } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { addTray, deleteTray, readState, setPocket } from '$lib/server/store';
+import { addTray, deleteTray, readState, renameTray, setPocket } from '$lib/server/store';
 import type { TraySize } from '$lib/types';
 
 export const load: PageServerLoad = async ({ platform }) => {
@@ -63,6 +63,17 @@ export const actions: Actions = {
 		const trayId = parseTrayId(data.get('trayId'));
 		if (trayId === null) return fail(400, { error: 'Bad tray id' });
 		await deleteTray(kv, trayId);
+		return { ok: true };
+	},
+	renameTray: async ({ request, platform }) => {
+		const kv = platform?.env?.SEED_KV;
+		if (!kv) throw error(500, 'KV binding SEED_KV is not configured');
+		const data = await request.formData();
+		const trayId = parseTrayId(data.get('trayId'));
+		const newId = parseTrayId(data.get('newId'));
+		if (trayId === null || newId === null) return fail(400, { error: 'Bad input' });
+		const result = await renameTray(kv, trayId, newId);
+		if (!result.ok) return fail(409, { error: result.error ?? 'Failed to rename' });
 		return { ok: true };
 	}
 };
