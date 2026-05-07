@@ -21,9 +21,10 @@ async function writeState(kv: KVNamespace, state: State): Promise<void> {
 
 export async function addTray(kv: KVNamespace, size: TraySize): Promise<Tray> {
 	const state = await readState(kv);
-	const tray = emptyTray(state.nextId, size);
+	const nextId = state.trays.length ? Math.max(...state.trays.map((t) => t.id)) + 1 : 1;
+	const tray = emptyTray(nextId, size);
 	state.trays.push(tray);
-	state.nextId += 1;
+	state.nextId = nextId + 1;
 	await writeState(kv, state);
 	return tray;
 }

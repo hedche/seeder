@@ -53,7 +53,14 @@
 
 <header class="bar">
 	<h1>🌱 Seeder</h1>
-	<button type="button" class="primary" onclick={() => (adding = !adding)}>
+	<button
+		type="button"
+		class="primary"
+		onclick={() => {
+			adding = !adding;
+			if (adding) window.scrollTo({ top: 0, behavior: 'smooth' });
+		}}
+	>
 		{adding ? 'Cancel' : '+ New tray'}
 	</button>
 </header>
