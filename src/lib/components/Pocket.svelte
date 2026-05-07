@@ -16,20 +16,11 @@
 	function sowStyle(sownAt: string): string {
 		const days = (Date.now() - new Date(sownAt).getTime()) / 86_400_000;
 		const t = Math.min(Math.max(days, 0) / 21, 1);
-		// 3 segments: white (day 0) → light red (day 7) → orange (day 14) → green (day 21)
-		let hue: number, sat: number, lit: number;
-		if (t < 1 / 3) {
-			const s = t * 3;
-			hue = 0; sat = s * 45; lit = 100 - s * 8;
-		} else if (t < 2 / 3) {
-			const s = (t - 1 / 3) * 3;
-			hue = s * 25; sat = 45 + s * 35; lit = 92 - s * 30;
-		} else {
-			const s = (t - 2 / 3) * 3;
-			hue = 25 + s * 95; sat = 80 - s * 30; lit = 62 - s * 12;
-		}
-		const color = lit > 65 ? '#000' : '#fff';
-		return `background:hsl(${hue.toFixed(0)},${sat.toFixed(0)}%,${lit.toFixed(0)}%);color:${color}`;
+		// white (day 0) → pale green → dark green (day 21)
+		const sat = t * 55;
+		const lit = 100 - t * 65;
+		const color = lit > 60 ? '#000' : '#fff';
+		return `background:hsl(120,${sat.toFixed(0)}%,${lit.toFixed(0)}%);color:${color}`;
 	}
 
 	const bgStyle = $derived(
