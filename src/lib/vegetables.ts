@@ -4,9 +4,10 @@ export type VegetableEntry = Vegetable & { aliases?: string[] };
 
 const FALLBACK = '🌱';
 
-// Common UK garden vegetables and herbs. Where Unicode has no good match the
-// emoji falls back to a generic seedling and the name carries the meaning.
+// Common garden plants. Where Unicode has no good match the emoji falls back
+// to a generic seedling and the name carries the meaning.
 export const VEGETABLES: VegetableEntry[] = [
+	// Vegetables
 	{ name: 'Tomato', emoji: '🍅' },
 	{ name: 'Carrot', emoji: '🥕' },
 	{ name: 'Lettuce', emoji: '🥬' },
@@ -49,6 +50,7 @@ export const VEGETABLES: VegetableEntry[] = [
 	{ name: 'Asparagus', emoji: FALLBACK },
 	{ name: 'Artichoke', emoji: FALLBACK },
 	{ name: 'Strawberry', emoji: '🍓' },
+	// Herbs
 	{ name: 'Basil', emoji: '🌿' },
 	{ name: 'Parsley', emoji: '🌿' },
 	{ name: 'Coriander', emoji: '🌿', aliases: ['cilantro'] },
@@ -59,7 +61,55 @@ export const VEGETABLES: VegetableEntry[] = [
 	{ name: 'Rosemary', emoji: '🌿' },
 	{ name: 'Oregano', emoji: '🌿' },
 	{ name: 'Chives', emoji: '🌿' },
-	{ name: 'Tarragon', emoji: '🌿' }
+	{ name: 'Tarragon', emoji: '🌿' },
+	{ name: 'Chervil', emoji: '🌿' },
+	{ name: 'Lemon balm', emoji: '🌿' },
+	{ name: 'Marjoram', emoji: '🌿' },
+	{ name: 'Lovage', emoji: '🌿' },
+	{ name: 'Borage', emoji: '🌿' },
+	{ name: 'Chamomile', emoji: '🌿' },
+	{ name: 'Lemongrass', emoji: '🌿' },
+	{ name: 'Bay', emoji: '🌿', aliases: ['bay laurel'] },
+	{ name: 'Stevia', emoji: '🌿' },
+	{ name: 'Vietnamese coriander', emoji: '🌿', aliases: ['rau ram'] },
+	// Flowers
+	{ name: 'Sunflower', emoji: '🌻' },
+	{ name: 'Marigold', emoji: '🌼' },
+	{ name: 'Nasturtium', emoji: '🌸' },
+	{ name: 'Sweet pea', emoji: '🌸' },
+	{ name: 'Lavender', emoji: '💜' },
+	{ name: 'Dahlia', emoji: '🌸' },
+	{ name: 'Zinnia', emoji: '🌸' },
+	{ name: 'Cosmos', emoji: '🌸' },
+	{ name: 'Poppy', emoji: '🌺' },
+	{ name: 'Cornflower', emoji: '💙' },
+	{ name: 'Snapdragon', emoji: '🌸' },
+	{ name: 'Foxglove', emoji: '🌸' },
+	{ name: 'Hollyhock', emoji: '🌸' },
+	{ name: 'Lupin', emoji: '🌸', aliases: ['lupine'] },
+	{ name: 'Larkspur', emoji: '🌸' },
+	{ name: 'Nigella', emoji: '🌸', aliases: ['love-in-a-mist'] },
+	{ name: 'Calendula', emoji: '🌼', aliases: ['pot marigold'] },
+	{ name: 'Pansy', emoji: '🌸' },
+	{ name: 'Viola', emoji: '🌸' },
+	{ name: 'Petunia', emoji: '🌸' },
+	{ name: 'Antirrhinum', emoji: '🌸', aliases: ['snapdragon'] },
+	{ name: 'Echinacea', emoji: '🌸', aliases: ['coneflower'] },
+	{ name: 'Rudbeckia', emoji: '🌻', aliases: ['black-eyed susan'] },
+	{ name: 'Statice', emoji: '🌸', aliases: ['limonium'] },
+	{ name: 'Sweet William', emoji: '🌸' },
+	{ name: 'Verbena', emoji: '🌸' },
+	{ name: 'Scabious', emoji: '🌸' },
+	{ name: 'Gypsophila', emoji: '🌸', aliases: ["baby's breath"] },
+	{ name: 'Stock', emoji: '🌸', aliases: ['matthiola'] },
+	{ name: 'Delphinium', emoji: '🌸' },
+	// Trees & shrubs (from seed)
+	{ name: 'Oak', emoji: '🌳' },
+	{ name: 'Apple', emoji: '🍎' },
+	{ name: 'Lemon', emoji: '🍋' },
+	{ name: 'Fig', emoji: FALLBACK },
+	{ name: 'Buddleia', emoji: '🌸', aliases: ['butterfly bush'] },
+	{ name: 'Rose', emoji: '🌹' },
 ];
 
 export function searchVegetables(query: string, limit = 8): VegetableEntry[] {
