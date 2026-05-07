@@ -19,17 +19,43 @@
 		onclose: () => void;
 	} = $props();
 
+	const RECENTS_KEY = 'seeder:recents';
+	const MAX_RECENTS = 6;
+
+	function loadRecents(): VegetableEntry[] {
+		if (typeof localStorage === 'undefined') return [];
+		try {
+			return JSON.parse(localStorage.getItem(RECENTS_KEY) ?? '[]');
+		} catch {
+			return [];
+		}
+	}
+
+	function saveRecent(v: Vegetable) {
+		const recents = loadRecents().filter((r) => r.name !== v.name);
+		recents.unshift({ name: v.name, emoji: v.emoji });
+		localStorage.setItem(RECENTS_KEY, JSON.stringify(recents.slice(0, MAX_RECENTS)));
+	}
+
 	let query = $state('');
 	let highlight = $state(0);
+	let recents = $state<VegetableEntry[]>([]);
 
 	$effect(() => {
 		if (open) {
 			query = '';
 			highlight = 0;
+			recents = loadRecents();
 		}
 	});
 
-	const results = $derived(searchVegetables(query));
+	const results = $derived(
+		query.trim()
+			? searchVegetables(query)
+			: recents.length
+				? recents
+				: searchVegetables('')
+	);
 	const trimmed = $derived(query.trim());
 	const showCustom = $derived(
 		trimmed.length > 0 && !results.some((r) => r.name.toLowerCase() === trimmed.toLowerCase())
@@ -50,6 +76,7 @@
 	let formEl: HTMLFormElement | null = $state(null);
 
 	function submitVegetable(v: Vegetable) {
+		saveRecent(v);
 		pickedName = v.name;
 		pickedEmoji = v.emoji;
 		queueMicrotask(() => formEl?.requestSubmit());
