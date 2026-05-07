@@ -13,7 +13,7 @@
 
 	const interactive = $derived(typeof onclick === 'function');
 
-	function sowColor(sownAt: string): string {
+	function sowStyle(sownAt: string): string {
 		const days = (Date.now() - new Date(sownAt).getTime()) / 86_400_000;
 		const t = Math.min(Math.max(days, 0) / 21, 1);
 		// 3 segments: white (day 0) → light red (day 7) → orange (day 14) → green (day 21)
@@ -28,11 +28,12 @@
 			const s = (t - 2 / 3) * 3;
 			hue = 25 + s * 95; sat = 80 - s * 30; lit = 62 - s * 12;
 		}
-		return `hsl(${hue.toFixed(0)},${sat.toFixed(0)}%,${lit.toFixed(0)}%)`;
+		const color = lit > 65 ? '#000' : '#fff';
+		return `background:hsl(${hue.toFixed(0)},${sat.toFixed(0)}%,${lit.toFixed(0)}%);color:${color}`;
 	}
 
 	const bgStyle = $derived(
-		pocket.vegetable && pocket.sownAt ? `background:${sowColor(pocket.sownAt)}` : ''
+		pocket.vegetable && pocket.sownAt ? sowStyle(pocket.sownAt) : ''
 	);
 </script>
 
