@@ -12,6 +12,22 @@
 	} = $props();
 
 	const interactive = $derived(typeof onclick === 'function');
+
+	function sowColor(sownAt: string): string {
+		const days = (Date.now() - new Date(sownAt).getTime()) / 86_400_000;
+		const t = Math.min(Math.max(days, 0) / 14, 1);
+		// hue:  0 (red) → 25 (orange) at t=0.5 → 120 (green) at t=1
+		const hue = t < 0.5 ? t * 2 * 25 : 25 + (t - 0.5) * 2 * 95;
+		// saturation: 45% → 80% → 50%
+		const sat = t < 0.5 ? 45 + t * 2 * 35 : 80 - (t - 0.5) * 2 * 30;
+		// lightness: 92% → 62% → 50%
+		const lit = t < 0.5 ? 92 - t * 2 * 30 : 62 - (t - 0.5) * 2 * 12;
+		return `hsl(${hue.toFixed(0)},${sat.toFixed(0)}%,${lit.toFixed(0)}%)`;
+	}
+
+	const bgStyle = $derived(
+		pocket.vegetable && pocket.sownAt ? `background:${sowColor(pocket.sownAt)}` : ''
+	);
 </script>
 
 {#if interactive}
@@ -20,6 +36,7 @@
 		class="pocket"
 		class:compact
 		class:filled={pocket.vegetable !== null}
+		style={bgStyle}
 		title={pocket.vegetable?.name ?? 'Empty pocket'}
 		aria-label={pocket.vegetable
 			? `${pocket.vegetable.name}, sown ${pocket.sownAt}. Tap to change.`
@@ -38,6 +55,7 @@
 		class="pocket"
 		class:compact
 		class:filled={pocket.vegetable !== null}
+		style={bgStyle}
 		title={pocket.vegetable?.name ?? ''}
 		aria-label={pocket.vegetable?.name ?? 'empty'}
 	>
